@@ -2,144 +2,325 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Digimon RPG">
+  <meta name="theme-color" content="#0a0f1e">
   <title>Digimon Rogue-like RPG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Base styles */
+    /* Premium Design System */
+    :root {
+      /* Color Palette */
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --dark-gradient: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --accent-blue: #00d4ff;
+      --accent-purple: #8b5cf6;
+      --accent-gold: #fbbf24;
+      --text-primary: rgba(255, 255, 255, 0.95);
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      
+      /* Shadows */
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+      --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.25);
+      --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.4);
+      --shadow-glow: 0 0 30px rgba(103, 126, 234, 0.3);
+      
+      /* Spacing */
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 1.5rem;
+      --space-lg: 2rem;
+      --space-xl: 3rem;
+      
+      /* Border Radius */
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+      
+      /* Typography */
+      --font-primary: 'Orbitron', monospace;
+      --font-secondary: 'Exo 2', sans-serif;
+      
+      /* Safe Area */
+      --safe-top: env(safe-area-inset-top);
+      --safe-bottom: env(safe-area-inset-bottom);
+      --safe-left: env(safe-area-inset-left);
+      --safe-right: env(safe-area-inset-right);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     
-    html, body {
-      width: 100%;
-      height: 100%;
-      background: #111;
-      color: #eee;
+    html {
+      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
       overflow: hidden;
     }
     
     body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      width: 100vw;
+      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
+      background: var(--dark-gradient);
+      color: var(--text-primary);
+      font-family: var(--font-secondary);
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+      left: 0;
+      
+      /* Padding for iPhone safe areas */
+      padding-top: var(--safe-top);
+      padding-bottom: var(--safe-bottom);
+      padding-left: var(--safe-left);
+      padding-right: var(--safe-right);
+    }
+
+    /* Mobile viewport height fix */
+    @supports (-webkit-touch-callout: none) {
+      body {
+        height: -webkit-fill-available;
+      }
     }
     
     #game-container {
       position: relative;
       width: 100%;
-      max-width: 900px;
       height: 100%;
-      max-height: 650px;
-      margin: 0 auto;
-      background: linear-gradient(135deg, #1a1a2e, #16213e);
-      border-radius: 8px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      background: var(--dark-gradient);
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Glassmorphism Base */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-md);
+    }
+
+    .glass-intense {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(40px) saturate(200%);
+      -webkit-backdrop-filter: blur(40px) saturate(200%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: var(--shadow-lg);
     }
     
-    /* Scrollable elements */
+    /* Premium Scrollables */
     .scrollable {
       overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: #4a6fa5 #16213e;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
     
     .scrollable::-webkit-scrollbar {
-      width: 8px;
+      display: none;
     }
     
-    .scrollable::-webkit-scrollbar-track {
-      background: #16213e;
+    /* Custom scrollbar for desktop */
+    @media (min-width: 768px) {
+      .scrollable {
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent-purple) transparent;
+      }
+      
+      .scrollable::-webkit-scrollbar {
+        display: block;
+        width: 6px;
+      }
+      
+      .scrollable::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      
+      .scrollable::-webkit-scrollbar-thumb {
+        background: var(--primary-gradient);
+        border-radius: 10px;
+        border: 2px solid transparent;
+        background-clip: content-box;
+      }
+      
+      .scrollable::-webkit-scrollbar-thumb:hover {
+        background: var(--secondary-gradient);
+        background-clip: content-box;
+      }
     }
-    
-    .scrollable::-webkit-scrollbar-thumb {
-      background-color: #4a6fa5;
-      border-radius: 10px;
-    }
-    
-    /* Buttons */
+
+    /* Premium Button System */
     .digimon-btn {
-      background: linear-gradient(135deg, #4a6fa5, #344fa1);
+      position: relative;
+      background: var(--primary-gradient);
       border: none;
-      border-radius: 4px;
-      color: #fff;
-      padding: 8px 16px;
-      margin: 5px;
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      padding: var(--space-sm) var(--space-md);
+      margin: var(--space-xs);
       cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 14px;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      font-family: var(--font-primary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+      min-height: 44px; /* Touch-friendly */
     }
-    
+
+    .digimon-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .digimon-btn:hover::before {
+      left: 100%;
+    }
+
     .digimon-btn:hover {
-      background: linear-gradient(135deg, #5a7fb5, #4a6fa5);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
     }
-    
+
     .digimon-btn:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transform: translateY(-1px) scale(0.98);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .digimon-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Button Variants */
+    .btn-secondary {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+    }
+
+    .btn-danger {
+      background: var(--secondary-gradient);
+    }
+
+    .btn-accent {
+      background: linear-gradient(135deg, var(--accent-gold), #f59e0b);
     }
     
-    /* Panels */
+    /* Premium Panels */
     .panel {
       position: absolute;
-      top: 0; left: 0;
+      top: 0; 
+      left: 0;
       width: 100%; 
       height: 100%;
-      background: rgba(10, 15, 30, 0.85);
-      backdrop-filter: blur(5px);
+      background: var(--dark-gradient);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
       z-index: 10;
-      padding: 20px;
+      padding: var(--space-lg);
       overflow-y: auto;
+      
+      /* Animated background */
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(103, 126, 234, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.05) 0%, transparent 50%);
+      background-size: 400% 400%;
+      animation: gradientShift 20s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
     
-    /* Title Screen */
+    /* Premium Title Screen */
     #title-screen {
-      background: radial-gradient(circle, #1a1a2e, #0f0f1a);
-      background-size: 200% 200%;
-      animation: pulseBackground 5s infinite alternate;
+      background: var(--dark-gradient);
+      background-image: 
+        radial-gradient(circle at 20% 20%, rgba(103, 126, 234, 0.2) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 50% 10%, rgba(251, 191, 36, 0.1) 0%, transparent 30%);
+      animation: titleBackgroundPulse 8s ease-in-out infinite;
     }
-    
-    @keyframes pulseBackground {
-      0% { background-position: 0% 0%; }
-      100% { background-position: 100% 100%; }
+
+    @keyframes titleBackgroundPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.02); }
     }
     
     #title-screen h1 {
-      font-size: 3em;
-      margin-bottom: 20px;
-      color: #ffb347;
-      text-shadow: 0 0 15px #ff8c00, 0 0 25px #ff8c00;
-      animation: titleGlow 3s infinite alternate;
-      letter-spacing: 2px;
+      font-family: var(--font-primary);
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 900;
+      margin-bottom: var(--space-lg);
+      background: linear-gradient(135deg, var(--accent-gold), #f59e0b, var(--accent-blue));
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: none;
+      animation: titleGradientFlow 4s ease infinite, titleFloat 6s ease-in-out infinite;
+      letter-spacing: 3px;
+      text-transform: uppercase;
     }
     
-    @keyframes titleGlow {
-      0% { text-shadow: 0 0 15px #ff8c00, 0 0 25px #ff8c00; }
-      100% { text-shadow: 0 0 25px #ff8c00, 0 0 40px #ff8c00; }
+    @keyframes titleGradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes titleFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
     }
     
     #title-screen .digivice-animation {
-      width: 180px;
-      height: 180px;
-      background-color: #ff8c00;
+      width: min(250px, 40vw);
+      height: min(250px, 40vw);
+      background: var(--primary-gradient);
       border-radius: 50%;
-      box-shadow: 0 0 30px #ff8c00, inset 0 0 20px rgba(255, 255, 255, 0.5);
-      margin: 20px auto;
+      box-shadow: 
+        0 0 50px rgba(103, 126, 234, 0.5),
+        0 0 100px rgba(103, 126, 234, 0.3),
+        inset 0 0 30px rgba(255, 255, 255, 0.1);
+      margin: var(--space-xl) auto;
       position: relative;
       overflow: hidden;
-      animation: rotateDigivice 8s linear infinite;
+      animation: digiviceRotate 10s linear infinite, digivicePulse 3s ease-in-out infinite;
     }
     
     .digivice-animation::before {
@@ -150,9 +331,11 @@
       transform: translate(-50%, -50%);
       width: 70%;
       height: 70%;
-      background-color: #16213e;
+      background: var(--dark-gradient);
       border-radius: 50%;
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+      box-shadow: 
+        inset 0 0 20px rgba(0, 0, 0, 0.8),
+        0 0 20px rgba(103, 126, 234, 0.3);
     }
     
     .digivice-animation::after {
@@ -163,106 +346,338 @@
       transform: translate(-50%, -50%);
       width: 40%;
       height: 40%;
-      background-color: #4a6fa5;
+      background: var(--secondary-gradient);
       border-radius: 50%;
-      box-shadow: 0 0 15px #4a6fa5;
-      animation: pulseScreen 2s infinite alternate;
+      box-shadow: 
+        0 0 30px rgba(139, 92, 246, 0.7),
+        inset 0 0 15px rgba(255, 255, 255, 0.2);
+      animation: screenPulse 2s ease-in-out infinite alternate;
     }
     
-    @keyframes rotateDigivice {
-      0% { transform: rotateY(0deg); }
-      100% { transform: rotateY(360deg); }
+    @keyframes digiviceRotate {
+      from { transform: rotateY(0deg) rotateZ(0deg); }
+      to { transform: rotateY(360deg) rotateZ(5deg); }
+    }
+
+    @keyframes digivicePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
     
-    @keyframes pulseScreen {
-      0% { opacity: 0.7; transform: translate(-50%, -50%) scale(0.95); }
-      100% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+    @keyframes screenPulse {
+      0% { 
+        opacity: 0.8; 
+        transform: translate(-50%, -50%) scale(0.95);
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+      }
+      100% { 
+        opacity: 1; 
+        transform: translate(-50%, -50%) scale(1.1);
+        box-shadow: 0 0 40px rgba(139, 92, 246, 0.8);
+      }
     }
     
     #title-screen p {
-      margin-top: 30px;
-      font-size: 1.5em;
-      color: #fff;
+      margin-top: var(--space-xl);
+      font-size: clamp(1.2rem, 4vw, 1.8rem);
+      font-family: var(--font-secondary);
+      font-weight: 300;
+      color: var(--text-secondary);
       cursor: pointer;
-      animation: blinkPress 1.5s infinite alternate;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      animation: pressPrompt 2s ease-in-out infinite;
+      text-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
+      letter-spacing: 1px;
     }
     
-    @keyframes blinkPress {
-      0% { opacity: 1; }
-      100% { opacity: 0.3; }
+    @keyframes pressPrompt {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.02); }
     }
     
-    /* Main Menu */
+    /* Premium Main Menu */
     #main-menu h2 {
-      font-size: 2.2em;
-      margin-bottom: 30px;
-      color: #ffb347;
-      text-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
+      font-family: var(--font-primary);
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 700;
+      margin-bottom: var(--space-xl);
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: none;
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
     
     #main-menu .menu-options {
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 90%;
-      max-width: 400px;
+      width: 100%;
+      max-width: 420px;
+      gap: var(--space-sm);
     }
     
     #main-menu .digimon-btn {
       width: 100%;
-      margin: 8px 0;
-      padding: 12px;
-      font-size: 1.1em;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      padding: var(--space-md) var(--space-lg);
+      font-size: 1rem;
+      letter-spacing: 1.5px;
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #main-menu .digimon-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 0;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      transition: width 0.3s ease;
+      z-index: 1;
+    }
+
+    #main-menu .digimon-btn:hover::after {
+      width: 100%;
+    }
+
+    /* Mobile-First Responsive Design */
+    @media (max-width: 768px) {
+      body {
+        padding-top: max(var(--safe-top), 0px);
+        padding-bottom: max(var(--safe-bottom), 0px);
+      }
+
+      .panel {
+        padding: var(--space-md);
+      }
+
+      #title-screen h1 {
+        font-size: clamp(2rem, 10vw, 3.5rem);
+        margin-bottom: var(--space-md);
+      }
+
+      #title-screen .digivice-animation {
+        width: min(200px, 50vw);
+        height: min(200px, 50vw);
+        margin: var(--space-lg) auto;
+      }
+
+      #title-screen p {
+        font-size: clamp(1rem, 5vw, 1.4rem);
+        margin-top: var(--space-lg);
+      }
+
+      .digimon-btn {
+        min-height: 48px;
+        font-size: 0.85rem;
+        padding: var(--space-sm) var(--space-md);
+      }
+
+      #main-menu .digimon-btn {
+        padding: var(--space-md);
+        font-size: 0.9rem;
+      }
+    }
+
+    /* iPhone X+ Safe Area Support */
+    @supports (padding: max(0px)) {
+      body {
+        padding-left: max(var(--safe-left), var(--space-sm));
+        padding-right: max(var(--safe-right), var(--space-sm));
+      }
+    }
+
+    /* High DPI Displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .digimon-sprite,
+      .party-sprite,
+      .caught-digi-sprite,
+      .scan-sprite {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+      }
+    }
+
+    /* Landscape Mobile Optimization */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .panel {
+        padding: var(--space-sm);
+        justify-content: flex-start;
+        padding-top: var(--space-md);
+      }
+
+      #title-screen h1 {
+        font-size: clamp(1.5rem, 8vw, 2.5rem);
+        margin-bottom: var(--space-sm);
+      }
+
+      #title-screen .digivice-animation {
+        width: min(120px, 25vw);
+        height: min(120px, 25vw);
+        margin: var(--space-sm) auto;
+      }
+
+      #title-screen p {
+        margin-top: var(--space-sm);
+        font-size: clamp(0.9rem, 4vw, 1.2rem);
+      }
+    }
+
+    /* Tablet Optimization */
+    @media (min-width: 768px) and (max-width: 1024px) {
+      #game-container {
+        max-width: 90vw;
+        max-height: 90vh;
+        margin: 5vh auto;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-lg);
+      }
+    }
+
+    /* Desktop Optimization */
+    @media (min-width: 1025px) {
+      #game-container {
+        max-width: 1200px;
+        max-height: 800px;
+        margin: auto;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-lg);
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+      }
+    }
+
+    /* Hover Effects (Desktop Only) */
+    @media (hover: hover) {
+      .digimon-btn:hover {
+        transform: translateY(-3px) scale(1.02);
+      }
+
+      .glass:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+    }
+
+    /* Reduce Motion for Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .digivice-animation {
+        animation: none !important;
+      }
+
+      #title-screen h1 {
+        animation: none !important;
+      }
+    }
+
+    /* Dark Mode Support */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --glass-bg: rgba(255, 255, 255, 0.03);
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --text-primary: rgba(255, 255, 255, 0.98);
+        --text-secondary: rgba(255, 255, 255, 0.8);
+      }
     }
     
-    /* Character Select */
+    /* Premium Character Select */
     #character-select h2 {
-      font-size: 1.8em;
-      margin-bottom: 15px;
-      color: #ffb347;
-      text-shadow: 0 0 10px rgba(255, 140, 0, 0.3);
+      font-family: var(--font-primary);
+      font-size: clamp(1.5rem, 5vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: var(--space-lg);
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
     }
     
     #starter-digimon-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      max-width: 700px;
-      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: var(--space-md);
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: var(--space-xl);
+      padding: 0 var(--space-sm);
     }
     
     .digimon-starter-card {
-      background: linear-gradient(135deg, #1c2541, #0b132b);
-      border-radius: 8px;
-      border: 1px solid #4a6fa5;
-      width: 140px;
-      height: 180px;
-      margin: 10px;
-      padding: 15px 10px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
       text-align: center;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .digimon-starter-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--primary-gradient);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
     }
     
     .digimon-starter-card:hover {
-      transform: translateY(-5px) scale(1.03);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-      border-color: #ff8c00;
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
+      border-color: rgba(103, 126, 234, 0.5);
+    }
+
+    .digimon-starter-card:hover::before {
+      opacity: 0.1;
     }
     
     .digimon-starter-card.selected {
-      border: 2px solid #ff8c00;
-      box-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+      border: 2px solid var(--accent-gold);
+      box-shadow: 0 0 30px rgba(251, 191, 36, 0.4), var(--shadow-lg);
+      background: rgba(251, 191, 36, 0.05);
+    }
+
+    .digimon-starter-card.selected::before {
+      background: linear-gradient(135deg, var(--accent-gold), #f59e0b);
+      opacity: 0.15;
     }
     
     .digimon-starter-card.locked {
-      opacity: 0.5;
+      opacity: 0.4;
       cursor: not-allowed;
+      filter: grayscale(0.8);
     }
     
     .digimon-starter-card.locked::after {
@@ -271,35 +686,53 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 2em;
-      color: #ff8c00;
+      font-size: 2.5em;
+      color: var(--accent-gold);
+      text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+      z-index: 10;
     }
     
     .digimon-starter-card img {
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
       display: block;
-      margin: 5px auto;
+      margin: 0 auto var(--space-sm);
       border-radius: 50%;
-      background-color: rgba(255, 255, 255, 0.1);
-      padding: 5px;
-      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.05);
+      padding: var(--space-xs);
+      transition: all 0.4s ease;
+      border: 2px solid transparent;
     }
     
     .digimon-starter-card:hover img {
-      transform: scale(1.1);
+      transform: scale(1.1) rotateY(10deg);
+      border-color: rgba(103, 126, 234, 0.3);
+      box-shadow: 0 0 20px rgba(103, 126, 234, 0.3);
+    }
+
+    .digimon-starter-card.selected img {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
     }
     
     .digimon-starter-card p {
-      margin-top: 10px;
-      font-weight: bold;
-      color: #fff;
+      font-family: var(--font-primary);
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      margin: 0;
+      letter-spacing: 0.5px;
     }
     
     .digimon-starter-card .type {
-      font-size: 0.8em;
-      color: #4a6fa5;
-      margin-top: 5px;
+      font-family: var(--font-secondary);
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: var(--space-xs);
+      padding: var(--space-xs) var(--space-sm);
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      display: inline-block;
     }
     
     #digivice-selection {
@@ -8885,6 +9318,21 @@
         document.body.removeChild(modal);
       }, 5000);
     }
+
+    /* Mobile Viewport Height Fix */
+    function setVH() {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    
+    // Set initial viewport height
+    setVH();
+    
+    // Re-calculate on resize and orientation change
+    window.addEventListener('resize', setVH);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(setVH, 100);
+    });
 
     /* Start the game! */
     console.log("Digimon Rogue-like RPG initialized!");
